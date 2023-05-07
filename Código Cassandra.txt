@@ -1,0 +1,39 @@
+mkdir cassandra
+cd cassandra
+ls
+
+
+
+docker-compose -f docker-compose.yml up
+
+docker exec -it DSE-6_node1 bash
+nodetool help
+nodetool status
+
+
+cqlsh
+
+DESC keyspaces;
+
+CREATE KEYSPACE musicDb WITH replication={'class':'SimpleS tradegy','replication_factor':'3};
+USE musicDb
+
+
+CREATE TABLE musics_by_genre (
+  genre VARCHAR,
+  performer VARCHAR,
+  year INT,
+  title VARCHAR,
+  PRIMARY KEY ((genre), performer, year, title)
+) WITH CLUSTERING ORDER BY (performer ASC, year DESC, title ASC);
+
+DESC TABLE musics_by_genre;
+INSERT INTO musics_by_genre (genre, performer, year, title) VALUES ('Rock', 'Nirvana', 1991, 'Smells Like Teen Spirit');
+
+
+
+docker stop <container-id1>
+docker stop <container-id2>
+
+CONSISTENCY ONE;
+SELECT * FROM musics_by_genre WHERE genre='Rock';
